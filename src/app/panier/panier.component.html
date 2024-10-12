@@ -1,0 +1,27 @@
+<div class="container m-3">
+<table class="table">
+  <thead class="table-light">
+    <tr>
+      <th>Designation</th>
+      <th>Prix</th>
+      <th>Quantite</th>
+      <th>Totale</th>
+    </tr>
+  </thead>
+<tbody>
+  @for(dp of detailPanier;let i=$index;track i){
+  <tr>
+<td>{{dp.produit.description}}</td>
+<td>{{dp.produit.prix}} DH</td>
+<td>{{dp.qte}}</td>
+<td>{{dp.qte*dp.produit.prix}} DH</td>
+  </tr>}
+<tr>
+<td></td>
+  <td></td>
+<td></td>
+<td>Totale : {{getTotale()}}</td>
+</tr>
+</tbody>
+</table>
+</div>

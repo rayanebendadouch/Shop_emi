@@ -1,0 +1,16 @@
+<div class="card mb-4 product-card">
+<img [src]="produit!.urlimg" class="card-img-top " [alt]="produit!.nom">
+<div class="card-body">
+    <span [ngStyle]="{color : getColor(produit.stock)}">{{getState(produit.stock)}}</span>
+<h5 class="card-title">{{produit!.nom}}</h5>
+<p class="card-text">Price: {{ produit.prix }} DH</p>
+<p class="card-text">Category: {{ produit.categorie }}</p>
+<p class="card-text">{{ produit.description }}</p>
+</div>
+<div class="card-footer">
+    <button [disabled]="produit.stock<=0" class="btn btn-primary" (click)="addToCart()">ajouter au panier</button>
+</div>
+
+
+
+</div>
