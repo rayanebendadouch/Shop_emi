@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Produit } from '../../Models/produit';
 import { ProductitmComponent } from '../productitm/productitm.component';
 import { Lignepanier } from '../../Models/lignepanier';
-import { ProductserviceService } from '../productservice.service';
 import { PanierComponent } from '../panier/panier.component';
 import { FormsModule } from '@angular/forms';
+import { ProductService } from '../services/product.service';
+import { Productapi } from '../../Models/productapi';
 
 @Component({
   selector: 'app-listproduct',
@@ -14,16 +15,8 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './listproduct.component.css'
 })
 export class ListproductComponent implements OnInit{
-  produits: Produit[] = [
-    new Produit(1 ,'iPhone 15', 'https://mediazone.ma/uploads/images/products/14643/14643-MeYP7wKI.webp', 15000, 'Electronics', 'A great electronic product' , 56),
-    new Produit(2,'Asus', 'https://mediazone.ma/uploads/images/products/15055/15055-KG1ZWYSi.webp', 19.99, 'Books', 'An interesting book to read' , 5),
-    new Produit(3,'Samsung Galaxy S22', 'https://images.samsung.com/is/image/samsung/p6pim/nz/sm-s901elvdxnz/gallery/nz-galaxy-s22-s901-410111-sm-s901elvdxnz-thumb-533033616', 6999.99, 'Electronics', 'Latest Samsung flagship smartphone',0),
-    new Produit(4,'Sony PlayStation 5', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKa1HAGWrDwUKbAlNKwe3L2j0Cu3e0QQ_nbg&s', 3999.99, 'Gaming', 'Next-gen gaming console by Sony',55),
-    new Produit(5,'MacBook Pro', 'https://images-cdn.ubuy.ae/633aa5377c62ab34c07fe77b-apple-macbook-pro-with-apple-m2-chip.jpg', 4299.99, 'Computers', 'High-performance laptop from Apple',1),
-    new Produit(6,'Kindle Paperwhite', 'https://media.wired.com/photos/618076ef6fe08d62522d94c7/3:2/w_2400,h_1600,c_limit/Gear-Kindle-Paperwhite-top.jpg', 129.99, 'Books', 'Amazon’s most popular e-reader', 20),
-    new Produit(7,'Mac book', 'https://technoplace.ma/21804-large_default/apple-macbook-pro-13-m2-laptop.jpg', 3999.99, 'Computers', 'High-performance laptop from Apple' , 30),
-    new Produit(8 ,'Bose QuietComfort 45', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFdaGsGo_Fwz_7zCvkZSNAgDV5TCtBu8hLNA&s', 299.99, 'Electronics', 'Noise-canceling headphones by Bose',40)
-];
+  produits: Produit[] = [];
+  productApi:Productapi[]=[];
 detailProduit:Lignepanier[]=[]
 displayPanier : boolean=false
 nameProduct:string="";
@@ -48,18 +41,15 @@ this.displayPanier=true
 ShowHome(){
   this.displayPanier=false
 }
-constructor(private prodserve : ProductserviceService){}
+constructor(private prodserve : ProductService){}
 ngOnInit(): void {
-  this.produits= [
-    new Produit(1 ,'iPhone 15', 'https://mediazone.ma/uploads/images/products/14643/14643-MeYP7wKI.webp', 15000, 'Electronics', 'A great electronic product' , 56),
-    new Produit(2,'Asus', 'https://mediazone.ma/uploads/images/products/15055/15055-KG1ZWYSi.webp', 19.99, 'Books', 'An interesting book to read' , 5),
-    new Produit(3,'Samsung Galaxy S22', 'https://images.samsung.com/is/image/samsung/p6pim/nz/sm-s901elvdxnz/gallery/nz-galaxy-s22-s901-410111-sm-s901elvdxnz-thumb-533033616', 6999.99, 'Electronics', 'Latest Samsung flagship smartphone',0),
-    new Produit(4,'Sony PlayStation 5', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKa1HAGWrDwUKbAlNKwe3L2j0Cu3e0QQ_nbg&s', 3999.99, 'Gaming', 'Next-gen gaming console by Sony',55),
-    new Produit(5,'MacBook Pro', 'https://images-cdn.ubuy.ae/633aa5377c62ab34c07fe77b-apple-macbook-pro-with-apple-m2-chip.jpg', 4299.99, 'Computers', 'High-performance laptop from Apple',1),
-    new Produit(6,'Kindle Paperwhite', 'https://media.wired.com/photos/618076ef6fe08d62522d94c7/3:2/w_2400,h_1600,c_limit/Gear-Kindle-Paperwhite-top.jpg', 129.99, 'Books', 'Amazon’s most popular e-reader', 20),
-    new Produit(7,'Mac book', 'https://technoplace.ma/21804-large_default/apple-macbook-pro-13-m2-laptop.jpg', 3999.99, 'Computers', 'High-performance laptop from Apple' , 30),
-    new Produit(8 ,'Bose QuietComfort 45', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFdaGsGo_Fwz_7zCvkZSNAgDV5TCtBu8hLNA&s', 299.99, 'Electronics', 'Noise-canceling headphones by Bose',40)
-];
+this.prodserve.getallproduct().subscribe((data:any)=>{
+  this.productApi=data.products
+  this.productApi.forEach(p=>{
+    const prod=new Produit(p.id,p.title,p.images[0],p.price,p.category,p.description,p.stock)
+    this.produits.push(prod);
+  })
+})
 }
 search(){
   if(this.nameProduct==''){
@@ -71,3 +61,4 @@ search(){
   })
 }
 }
+
