@@ -6,6 +6,7 @@ import { PanierComponent } from '../panier/panier.component';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../services/product.service';
 import { Productapi } from '../../Models/productapi';
+import { CategoryService } from '../services/category.service';
 
 @Component({
   selector: 'app-listproduct',
@@ -20,6 +21,8 @@ export class ListproductComponent implements OnInit{
 detailProduit:Lignepanier[]=[]
 displayPanier : boolean=false
 nameProduct:string="";
+categories:any[]=[];
+categoyselect:string=""
 addOnPanier(p:Produit){
   let i:number=0
   let j:number=0
@@ -41,19 +44,44 @@ this.displayPanier=true
 ShowHome(){
   this.displayPanier=false
 }
-constructor(private prodserve : ProductService){}
+constructor(private prodserve : ProductService,private categ:CategoryService){}
 ngOnInit(): void {
+  
 this.prodserve.getallproduct().subscribe((data:any)=>{
   this.productApi=data.products
+  this.produits=[]
   this.productApi.forEach(p=>{
     const prod=new Produit(p.id,p.title,p.images[0],p.price,p.category,p.description,p.stock)
     this.produits.push(prod);
   })
 })
+this.categ.getallcategory().subscribe((data:any)=>
+{
+  this.categories=data;
+})
+
 }
+displaycategory(){
+  console.log(this.categoyselect)
+  if(this.categoyselect=="Select category"){
+    this.ngOnInit()
+  }
+  else{
+  this.categ.getproductbycategory(this.categoyselect).subscribe((data:any)=>{
+    this.productApi=data.products
+    this.produits=[]
+  this.productApi.forEach(p=>{
+    const prod=new Produit(p.id,p.title,p.images[0],p.price,p.category,p.description,p.stock)
+    this.produits.push(prod);
+   
+  })
+},
+(error : any)=>{
+  console.log("error :",error);
+})}}
 search(){
   if(this.nameProduct==''){
-    this.ngOnInit();
+    this.displaycategory();
   }
   
   this.produits=this.produits.filter(obj=>{
